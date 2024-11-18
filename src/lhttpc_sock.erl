@@ -68,7 +68,9 @@
 -spec connect(host(), integer(), socket_options(), timeout(), boolean()) ->
     {ok, socket()} | {error, atom()}.
 connect(Host, Port, Options, Timeout, true) ->
-    ssl:connect(Host, Port, Options, Timeout);
+    NoDuplicates = sets:from_list([{verify, verify_none} | Options]),
+    Options2 = sets:to_list(NoDuplicates),
+    ssl:connect(Host, Port, Options2, Timeout);
 connect(Host, Port, Options, Timeout, false) ->
     gen_tcp:connect(Host, Port, Options, Timeout).
 
