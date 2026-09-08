@@ -1,9 +1,0 @@
-language: erlang
-otp_release:
-  - R16B03-1
-  - 17.5
-  - 18.3
-  - 19.3.6
-  - 20.3.8
-  - 21.1
-script: "make test"
