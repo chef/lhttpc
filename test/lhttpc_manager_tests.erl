@@ -74,7 +74,7 @@ empty_manager() ->
     ?assertEqual(ok, stop_client(Client)),
     ?assertEqual(0, lhttpc_manager:connection_count(lhttpc_manager)),
 
-    catch gen_tcp:close(LS),
+    try gen_tcp:close(LS) catch _:_ -> ok end,
     unlink(whereis(lhttpc_manager)),
     ok.
 
@@ -106,7 +106,7 @@ one_socket() ->
 
     ?assertEqual(ok, stop_client(Client1)),
     ?assertEqual(ok, stop_client(Client2)),
-    catch gen_tcp:close(LS),
+    try gen_tcp:close(LS) catch _:_ -> ok end,
     unlink(whereis(lhttpc_manager)),
     ok.
 
@@ -144,7 +144,7 @@ connection_timeout() ->
     ?assertEqual(ok, ping_client(Client)),
     ?assertEqual(1, lhttpc_manager:connection_count(lhttpc_manager)),
 
-    catch gen_tcp:close(LS),
+    try gen_tcp:close(LS) catch _:_ -> ok end,
     ?assertEqual(ok, stop_client(Client)),
     unlink(whereis(lhttpc_manager)),
     ok.
@@ -269,7 +269,7 @@ many_sockets() ->
     lhttpc_manager ! {tcp_closed, Socket3},
     ?assertEqual(0, lhttpc_manager:connection_count(lhttpc_manager)),
 
-    catch gen_tcp:close(LS),
+    try gen_tcp:close(LS) catch _:_ -> ok end,
     ?assertEqual(ok, stop_client(Client1)),
     ?assertEqual(ok, stop_client(Client2)),
     ?assertEqual(ok, stop_client(Client3)),
@@ -343,7 +343,7 @@ spawn_client() ->
 client_loop(Parent, Socket) ->
     receive
         stop ->
-            catch gen_tcp:close(Socket),
+            try gen_tcp:close(Socket) catch _:_ -> ok end,
             Parent ! stopped;
         {get_socket, Ref} ->
             Parent ! {socket, Ref, Socket},

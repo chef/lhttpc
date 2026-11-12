@@ -524,7 +524,7 @@ deliver_socket(Socket, {_, _, Ssl} = Dest, State) ->
                     lhttpc_sock:setopts(Socket, [{active, once}], Ssl),
                     deliver_socket(Socket, Dest, State#httpc_man{queues = Queues2});
                 _ -> % Something wrong with the socket; just remove it
-                    catch lhttpc_sock:close(Socket, Ssl),
+                    try lhttpc_sock:close(Socket, Ssl) catch _:_ -> ok end,
                     State
             end
     end.
